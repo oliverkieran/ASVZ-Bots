@@ -43,7 +43,8 @@ class TelegramBot:
 
 		elif type == "no_sign_up_button":
 			self.message = "Couldn't sign up because Sign Up button could not be found :("
-
+		elif type == "signup_button_disabled":
+			self.message = "Signup button was disabled."
 		else:
 			self.message = "An invalid argument was passed to TelegramBot.create_msg()"
 

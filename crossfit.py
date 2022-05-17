@@ -109,7 +109,14 @@ while not signed_up:
 
 				# Sign up for lesson
 				try:
-					driver.find_element_by_xpath("//button[@id='btnRegister']").click() 
+					signup_button = driver.find_element_by_xpath("//button[@id='btnRegister']")
+					if signup_button.value_of_css_property("cursor") == "pointer":
+						signup_button.click()
+					else:
+						# Signup button is disabled :( Probably to early to sign up.
+						message = bot.create_message("signup_button_disabled")
+						print(message)
+						break
 				except Exception as e:
 					message = bot.create_message("no_sign_up_button")
 					print(message)
