@@ -1,8 +1,9 @@
-from datetime import datetime
 import os
 import random
-from selenium import webdriver
 import time
+from datetime import datetime
+
+from selenium import webdriver
 
 from options import Options
 from telegram_bot import TelegramBot
@@ -17,7 +18,7 @@ bot = TelegramBot()
 now = datetime.now().strftime("%H:%M")
 
 # Configure and start the webdriver
-DRIVER_PATH = '/Users/Oli/Documents/Webdriver/chromedriver_mac64_m1'
+DRIVER_PATH = os.getenv("CHROMEDRIVER_PATH")
 #DRIVER_PATH = '/usr/lib/chromium-browser/chromedriver' #for Raspberry Pi
 
 if args.debug:

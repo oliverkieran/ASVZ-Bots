@@ -1,11 +1,14 @@
+import os
+
 import requests
+
 
 class TelegramBot:
 
 	def __init__(self):
 
-		self.bot_token = '1298530860:AAEleoFvouxUGl5GHjuN67Awl7Nxy3YnEEM'
-		self.bot_chatID = '1003688744'
+		self.bot_token = os.getenv("BOT_TOKEN")
+		self.bot_chatID = os.getenv("BOT_CHAT_ID")
 
 
 	# Function to send telegram message
