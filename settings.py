@@ -1,6 +1,6 @@
 import argparse
 
-class Options:
+class Settings:
     """
     Options and settings for crossfit.py
     """
@@ -28,5 +28,5 @@ class Options:
 
 
     def parse(self):
-        self.opt = self.parser.parse_args()
-        return self.opt
+        self.settings = self.parser.parse_args()
+        return self.settings

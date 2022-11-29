@@ -1,5 +1,4 @@
 import os
-
 import requests
 
 
@@ -39,7 +38,7 @@ class TelegramBot:
 					class_details["Datum/Zeit"],
 					class_details["Anlage"],
 					class_details["Raum"],
-					class_details["Trainingsleitende"])
+					class_details.get("Trainingsleitende", "Kein Trainer"))
 
 		elif type == "no_sign_up_button":
 			self.message = "Couldn't sign up because Sign Up button could not be found :("

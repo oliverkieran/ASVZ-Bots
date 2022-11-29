@@ -4,12 +4,15 @@ import time
 from datetime import datetime
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.chrome.options import Options
 
-from options import Options
+from settings import Settings
 from telegram_bot import TelegramBot
 
 # Initialize user information and options
-args = Options().parse()
+args = Settings().parse()
 
 # Create telegram bot
 bot = TelegramBot()
@@ -19,15 +22,13 @@ now = datetime.now().strftime("%H:%M")
 
 # Configure and start the webdriver
 DRIVER_PATH = os.getenv("CHROMEDRIVER_PATH")
-#DRIVER_PATH = '/usr/lib/chromium-browser/chromedriver' #for Raspberry Pi
 
-if args.debug:
-	driver = webdriver.Chrome(executable_path=DRIVER_PATH)
-else:
-	options = webdriver.ChromeOptions()
-	options.add_argument('headless')
-	driver = webdriver.Chrome(executable_path=DRIVER_PATH, chrome_options=options)
-	print("Started webdriver at {}".format(now))
+options = Options()
+options.use_chromium = True
+if not args.debug:
+    options.add_argument('headless')
+driver = webdriver.Chrome(service=Service(DRIVER_PATH), options=options)
+print("Started webdriver at {}".format(now))
 
 # Set maximum time the driver should wait for an element to load
 # before it gives up (eg. 10 seconds)
@@ -46,8 +47,8 @@ while not signed_up:
 		# Save class details
 		class_details = dict()
 		try:
-			details_panel = driver.find_element_by_xpath("//div[@class='panel-body event-properties']")
-			for detail in details_panel.find_elements_by_tag_name("dl"):
+			details_panel = driver.find_element(By.XPATH, "//div[@class='panel-body event-properties']")
+			for detail in details_panel.find_elements(By.TAG_NAME, "dl"):
 				info = detail.text.split("\n")
 				class_details[info[0]] = info[1]
 			
@@ -79,22 +80,22 @@ while not signed_up:
 				# AUTO SIGN UP FOR LESSON
 				try:
 					# Click the login button
-					driver.find_element_by_xpath("//button[@title='Login']").click()
+					driver.find_element(By.XPATH, "//button[@title='Login']").click()
 
 					# Click the SwitchAai button
 					status = "SwitchAai page"
-					driver.find_element_by_xpath("//button[@title='SwitchAai Account Login']").click()
+					driver.find_element(By.XPATH, "//button[@title='SwitchAai Account Login']").click()
 
 					# Select ETH Zuerich as institution
 					status = "Select institution page"
-					driver.find_element_by_xpath("//input[@id='userIdPSelection_iddtext']").send_keys("ETH")
-					driver.find_element_by_xpath("//input[@type='submit']").click()
+					driver.find_element(By.XPATH, "//input[@id='userIdPSelection_iddtext']").send_keys("ETH")
+					driver.find_element(By.XPATH, "//input[@type='submit']").click()
 
 					# Enter ETH login credentials
 					status = "Login page"
-					driver.find_element_by_xpath("//input[@id='username']").send_keys(args.user)
-					driver.find_element_by_xpath("//input[@id='password']").send_keys(args.password)
-					driver.find_element_by_xpath("//button[@type='submit']").click()
+					driver.find_element(By.XPATH, "//input[@id='username']").send_keys(args.user)
+					driver.find_element(By.XPATH, "//input[@id='password']").send_keys(args.password)
+					driver.find_element(By.XPATH, "//button[@type='submit']").click()
 					
 				except NoSuchElementException:
 					print("NoSuchElementException: There was a error while trying to fetch an element on page: {}.".format(status))
@@ -102,14 +103,14 @@ while not signed_up:
 
 				try:
 					# Accept the forwarding of informtaion
-					forward_info = driver.find_element_by_xpath("//input[@name='_eventId_proceed']")
+					forward_info = driver.find_element(By.XPATH, "//input[@name='_eventId_proceed']")
 					forward_info.click()
 				except:
 					print("There was no need to agree on your information being sent.")
 
 				# Sign up for lesson
 				try:
-					signup_button = driver.find_element_by_xpath("//button[@id='btnRegister']")
+					signup_button = driver.find_element(By.XPATH, "//button[@id='btnRegister']")
 					if signup_button.value_of_css_property("cursor") == "pointer":
 						signup_button.click()
 					else:
